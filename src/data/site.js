@@ -14,7 +14,7 @@ export const site = {
   // Small labels on image placeholders naming the image that belongs there.
   showImageLabels: false,
 
-  currency: { code: 'INR', locale: 'en-IN' },
+  currency: { code: 'CAD', locale: 'en-CA' },
 
   contact: {
     email: null, // e.g. 'hello@example.com'

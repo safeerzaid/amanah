@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Heart, Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
@@ -18,9 +18,46 @@ export const navLinks = [
 ];
 
 export function AnnouncementBar() {
+  const trackRef = useRef(null);
+  const textRef = useRef(null);
+  // The bar must stay on one line. When the text is wider than the bar
+  // (narrow phones), it scrolls instead of wrapping to a second line.
+  const [scroll, setScroll] = useState(false);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const text = textRef.current;
+    if (!track || !text) return undefined;
+
+    // Measured on the first copy only, so its width stays the intrinsic
+    // text width whether or not the duplicate copy is rendered.
+    const measure = () => setScroll(text.scrollWidth > track.clientWidth + 1);
+    measure();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div className="announce">
-      <p>{site.announcement}</p>
+      <div
+        ref={trackRef}
+        className={classNames('announce__track', scroll && 'announce__track--scroll')}
+      >
+        <p className="announce__text" ref={textRef}>
+          {site.announcement}
+        </p>
+        {scroll && (
+          <p className="announce__text" aria-hidden="true">
+            {site.announcement}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
