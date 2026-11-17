@@ -699,6 +699,9 @@ a.social__item:hover {
   position: fixed;
   inset: 0;
   z-index: 90;
+}
+.fdrawer {
+  z-index: 200;
   visibility: hidden;
   pointer-events: none;
   transition: visibility 0s linear 0.5s;
@@ -748,6 +751,11 @@ a.social__item:hover {
 .is-open > .drawer__panel,
 .is-open > .fdrawer__panel {
   transform: none;
+}
+/* While the filter sheet is open nothing of the site shows above it. */
+body.filters-open .announce,
+body.filters-open .header {
+  visibility: hidden;
 }
 .drawer__head {
   position: sticky;

@@ -92,6 +92,11 @@ export default function Shop() {
   const closeDrawer = useCallback(() => setDrawer(false), []);
   useLockBody(drawer, closeDrawer);
 
+  useEffect(() => {
+    document.body.classList.toggle('filters-open', drawer);
+    return () => document.body.classList.remove('filters-open');
+  }, [drawer]);
+
   const load = useCallback(() => {
     setError(null);
     setAll(null);
