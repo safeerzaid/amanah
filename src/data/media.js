@@ -8,6 +8,7 @@
  */
 export const media = {
   heroMain: { src: '/images/hero-main.jpg', alt: 'Gold drop earrings, a solitaire pendant necklace and a ring displayed on burgundy velvet and marble', label: 'Hero campaign photo', tone: 'deep', motif: 'necklace' },
+  heroPoster: { src: '/images/hero-poster.jpg', alt: 'A woman wearing gold and ruby chandbali earrings and a pearl necklace, by candlelight', label: 'Hero: first frame of the film', tone: 'deep', motif: 'earrings' },
   heroFeature: { src: '/images/hero-card-earrings.jpg', alt: 'Pair of organic gold hoop earrings with a burgundy satin ribbon', label: 'Hero card: portrait', tone: 'deep', motif: 'earrings' },
   heroCardA: { src: '/images/hero-card-bracelet.jpg', alt: 'Gold bangle with a star centrepiece on burgundy satin', label: 'Hero card: detail 1', tone: 'deep', motif: 'ring' },
   heroCardB: { src: '/images/hero-card-hearts.jpg', alt: 'Gold heart charm bracelet and matching necklace on burgundy satin with a ribbon', label: 'Hero card: detail 2', tone: 'deep', motif: 'bracelet' },

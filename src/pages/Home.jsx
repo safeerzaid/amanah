@@ -15,8 +15,9 @@ function Hero() {
   return (
     <section className="hero" aria-label="Introduction">
       <div className="hero__bg">
-        {/* The film plays silently behind the headline. The still is its poster,
-            and is also what shows when motion is turned down in the OS. */}
+        {/* The film plays silently behind the headline. Its poster is its own
+            first frame, so nothing visibly swaps when playback starts; the same
+            frame stands in when motion is turned down in the OS. */}
         <video
           className="media hero__video"
           autoPlay
@@ -24,12 +25,12 @@ function Hero() {
           loop
           playsInline
           preload="auto"
-          poster="/images/hero-main.jpg"
+          poster="/images/hero-poster.jpg"
           aria-hidden="true"
         >
           <source src="/video/hero.mp4" type="video/mp4" />
         </video>
-        <Media id="heroMain" eager className="hero__still" />
+        <Media id="heroPoster" eager className="hero__still" />
       </div>
       <div className="hero__shade" aria-hidden="true" />
 
