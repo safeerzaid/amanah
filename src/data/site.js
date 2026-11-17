@@ -7,6 +7,8 @@ export const site = {
   name: 'Amanah Jewellery',
   tagline: 'Handcrafted Designer Jewellery',
   announcement: 'Handcrafted designer jewellery · Each piece made to be treasured',
+  // Shown instead of the full line on narrow screens, so the bar stays one line.
+  announcementShort: 'Handcrafted designer jewellery',
 
   // Shown on the shop pages while the catalogue is still demo data.
   demoCatalogue: true,

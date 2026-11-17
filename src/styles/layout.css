@@ -7,49 +7,30 @@
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  padding: 10px 0;
+  padding: 10px var(--gutter);
   border-bottom: 1px solid var(--gold-line);
   position: relative;
   z-index: 61;
-  overflow: hidden;
-}
-/* Centred while it fits; one line always. */
-.announce__track {
-  display: flex;
-  justify-content: center;
-  padding: 0 var(--gutter);
 }
 .announce__text {
   margin: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-/* Too narrow to fit: two copies slide past for a seamless loop. */
-.announce__track--scroll {
-  justify-content: flex-start;
-  width: max-content;
-  padding: 0;
-  animation: announce-marquee 22s linear infinite;
+.announce__text--short {
+  display: none;
 }
-.announce__track--scroll .announce__text {
-  padding-right: 3.5em;
-}
-@keyframes announce-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
+@media (max-width: 760px) {
   .announce {
-    overflow-x: auto;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
   }
-  .announce__track--scroll {
-    animation: none;
-  }
-  .announce__track--scroll .announce__text:nth-child(2) {
+  .announce__text--long {
     display: none;
+  }
+  .announce__text--short {
+    display: block;
   }
 }
 
