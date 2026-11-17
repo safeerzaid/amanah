@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, X, SearchX, AlertCircle } from 'lucide-react';
 import ProductCard, { ProductCardSkeleton } from '../components/ProductCard';
@@ -295,7 +296,8 @@ export default function Shop() {
         </div>
       </section>
 
-      <div className={classNames('fdrawer', drawer && 'is-open')} aria-hidden={!drawer}>
+      {createPortal(
+        <div className={classNames('fdrawer', drawer && 'is-open')} aria-hidden={!drawer}>
         <div className="fdrawer__scrim" onClick={closeDrawer} />
         <div className="fdrawer__panel" role="dialog" aria-modal="true" aria-label="Filters">
           <header className="drawer__head">
@@ -312,8 +314,10 @@ export default function Shop() {
               Show {results.length} {results.length === 1 ? 'piece' : 'pieces'}
             </button>
           </footer>
-        </div>
-      </div>
+          </div>
+        </div>,
+        document.body,
+      )}
     </>
   );
 }

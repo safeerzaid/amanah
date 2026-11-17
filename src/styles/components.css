@@ -698,7 +698,7 @@ a.social__item:hover {
 .search {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 90;
   visibility: hidden;
   pointer-events: none;
   transition: visibility 0s linear 0.5s;
@@ -750,6 +750,10 @@ a.social__item:hover {
   transform: none;
 }
 .drawer__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--ivory);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -792,7 +796,9 @@ a.social__item:hover {
 }
 .fdrawer__body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 24px;
 }
 .summary-row {
