@@ -497,19 +497,3 @@
   }
 }
 
-/* "Powered by Clixdot" credit */
-.footer__sep {
-  margin: 0 10px;
-  opacity: 0.5;
-}
-.footer__credit {
-  color: var(--ivory);
-  border-bottom: 1px solid rgba(254, 250, 234, 0.4);
-  transition:
-    color 0.3s,
-    border-color 0.3s;
-}
-.footer__credit:hover {
-  color: var(--gold);
-  border-color: var(--gold);
-}

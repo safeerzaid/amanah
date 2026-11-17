@@ -50,11 +50,6 @@ export default function Footer() {
         <div className="footer__bottom">
           <p>
             © {new Date().getFullYear()} {site.name}
-            <span className="footer__sep" aria-hidden="true">·</span>
-            Powered by{' '}
-            <a href="https://clixdot.com" target="_blank" rel="noopener noreferrer" className="footer__credit">
-              Clixdot
-            </a>
           </p>
           <ul className="footer__legal">
             <li>
