@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useInView } from '../hooks/useInView';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -12,6 +12,26 @@ import { products } from '../data/products';
 import { brandStory, site } from '../data/site';
 
 function Hero() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return undefined;
+
+    const tryPlay = () => {
+      const p = v.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+    tryPlay();
+
+    // If the phone held playback back, start on the first thing the visitor
+    // does. No button is ever shown.
+    const onFirstTouch = () => tryPlay();
+    const events = ['touchstart', 'pointerdown', 'scroll', 'visibilitychange'];
+    events.forEach((e) => window.addEventListener(e, onFirstTouch, { once: true, passive: true }));
+    return () => events.forEach((e) => window.removeEventListener(e, onFirstTouch));
+  }, []);
+
   return (
     <section className="hero" aria-label="Introduction">
       <div className="hero__bg">
@@ -19,7 +39,11 @@ function Hero() {
             first frame, so nothing visibly swaps when playback starts; the same
             frame stands in when motion is turned down in the OS. */}
         <video
+          ref={videoRef}
           className="media hero__video"
+          controls={false}
+          disablePictureInPicture
+          disableRemotePlayback
           autoPlay
           muted
           loop
