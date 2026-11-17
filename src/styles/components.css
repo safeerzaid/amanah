@@ -699,12 +699,13 @@ a.social__item:hover {
   position: fixed;
   inset: 0;
   z-index: 90;
-}
-.fdrawer {
-  z-index: 200;
   visibility: hidden;
   pointer-events: none;
   transition: visibility 0s linear 0.5s;
+}
+/* The filter sheet sits above the site header, which it hides while open. */
+.fdrawer {
+  z-index: 200;
 }
 .drawer.is-open,
 .fdrawer.is-open,
