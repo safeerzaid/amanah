@@ -18,6 +18,23 @@
   /* Desktop: earrings land between the headline and the cards, pendant stays left of the cards. */
   object-position: 48% 50%;
 }
+.hero__video {
+  /* The film crops like the still: fills the hero, centre of frame kept. */
+  object-position: 50% 50%;
+  animation: none;
+}
+/* The still only stands in for the film when motion is turned down. */
+.hero__still {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__video {
+    display: none;
+  }
+  .hero__still {
+    display: block;
+  }
+}
 @media (max-width: 1023px) {
   .hero__bg .media {
     /* Stacked layout: keep the earrings and pendant in the narrow crop. */
