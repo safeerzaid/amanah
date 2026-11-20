@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CreditCard, Loader2, Lock, ShoppingBag } from 'lucide-react';
+import { CheckCircle2, CreditCard, Loader2, Lock, ShoppingBag } from 'lucide-react';
 import { EmptyState, Field, Notice, PageHeader } from '../components/ui';
 import Media from '../components/Media';
 import { motifFor } from '../components/ProductCard';
 import { OrderTotals } from './Cart';
 import { useStore } from '../context/StoreContext';
 import { site } from '../data/site';
-import { placeOrder, NotConfiguredError } from '../utils/api';
+import { placeOrder, NotConfiguredError, PaymentCancelledError } from '../utils/api';
 import { classNames, formatPrice, isValidEmail, isValidPhone } from '../utils/format';
 
 const fields = {
@@ -36,7 +36,7 @@ function validate(values) {
 }
 
 export default function Checkout() {
-  const { cart } = useStore();
+  const { cart, clearCart } = useStore();
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -75,15 +75,18 @@ export default function Checkout() {
     }
     setStatus({ state: 'loading' });
     try {
-      await placeOrder({
+      // Prices are recalculated by the backend; only ids, options and quantities are sent.
+      const order = await placeOrder({
         customer: values,
-        items: cart.items.map((i) => ({ id: i.id, variant: i.variant, qty: i.qty, unitPrice: i.unitPrice })),
-        subtotal: cart.subtotal,
+        items: cart.items.map((i) => ({ id: i.id, variant: i.variant, qty: i.qty })),
       });
-      // Only reached once a real order endpoint is configured and confirms the order.
-      setStatus({ state: 'sent' });
+      // Only reached once the backend has verified the payment.
+      clearCart();
+      setStatus({ state: 'sent', reference: order.reference, email: values.email });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       if (err instanceof NotConfiguredError) setStatus({ state: 'blocked' });
+      else if (err instanceof PaymentCancelledError) setStatus({ state: 'cancelled', message: err.message });
       else setStatus({ state: 'error', message: err.message });
     }
   };
@@ -109,7 +112,27 @@ export default function Checkout() {
     );
   };
 
-  if (cart.items.length === 0 && status.state !== 'sent') {
+  if (status.state === 'sent') {
+    return (
+      <>
+        <PageHeader eyebrow="Thank you" title="Order confirmed" crumbs={[{ label: 'Checkout' }]} />
+        <div className="container page-pad-b">
+          <EmptyState
+            icon={CheckCircle2}
+            title={`Order ${status.reference} is paid`}
+            text={`Thank you for choosing Amanah. A confirmation has been sent to ${status.email}, and we will email you again when your order ships.`}
+            action={
+              <Link to="/shop" className="btn btn--primary">
+                Continue shopping
+              </Link>
+            }
+          />
+        </div>
+      </>
+    );
+  }
+
+  if (cart.items.length === 0) {
     return (
       <>
         <PageHeader eyebrow="Checkout" title="Checkout" crumbs={[{ label: 'Shopping bag', to: '/cart' }, { label: 'Checkout' }]} />
@@ -167,10 +190,10 @@ export default function Checkout() {
             <div className="pay-placeholder">
               <CreditCard size={22} strokeWidth={1.2} />
               <div>
-                <p className="pay-placeholder__title">Payment gateway not connected</p>
+                <p className="pay-placeholder__title">Secure payment with Razorpay</p>
                 <p>
-                  Online payment options will appear here once a payment provider is set up. No payment details are
-                  collected on this page.
+                  When you continue, Razorpay opens a secure window to take your payment. Card details are entered
+                  there and never reach this website.
                 </p>
               </div>
             </div>
@@ -190,9 +213,9 @@ export default function Checkout() {
                 <p>{status.message} Your bag has been kept.</p>
               </Notice>
             )}
-            {status.state === 'sent' && (
-              <Notice tone="success" title="Order received">
-                <p>Your order request has been submitted. A confirmation will follow by email.</p>
+            {status.state === 'cancelled' && (
+              <Notice tone="warn" title="Payment not completed">
+                <p>{status.message}</p>
               </Notice>
             )}
           </div>
@@ -200,11 +223,11 @@ export default function Checkout() {
           <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={status.state === 'loading'}>
             {status.state === 'loading' ? (
               <>
-                <Loader2 size={17} className="spin" /> Placing order…
+                <Loader2 size={17} className="spin" /> Processing payment…
               </>
             ) : (
               <>
-                <Lock size={15} strokeWidth={1.4} /> Place order · {formatPrice(cart.subtotal)}
+                <Lock size={15} strokeWidth={1.4} /> Pay securely · {formatPrice(cart.subtotal)}
               </>
             )}
           </button>

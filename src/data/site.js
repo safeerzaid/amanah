@@ -1,3 +1,8 @@
+// The backend's base URL, e.g. 'https://api.example.com'. Set VITE_API_URL in
+// .env.local (and in Vercel). Without it the site runs on the demo catalogue
+// and the forms say they are not connected.
+export const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 /**
  * Site-wide settings. Every `null` value is a detail that has not been
  * confirmed by the brand yet. The UI shows "Coming soon" for it instead of
@@ -11,7 +16,7 @@ export const site = {
   announcementShort: 'Handcrafted designer jewellery',
 
   // Shown on the shop pages while the catalogue is still demo data.
-  demoCatalogue: true,
+  demoCatalogue: !API_URL,
 
   // Small labels on image placeholders naming the image that belongs there.
   showImageLabels: false,
@@ -36,9 +41,11 @@ export const site = {
   // Backend endpoints. While these are null, the forms explain that the
   // feature is not connected yet. They never pretend that something was sent.
   endpoints: {
-    orders: null,
-    contact: null,
-    newsletter: null,
+    products: API_URL ? `${API_URL}/api/products` : null,
+    orders: API_URL ? `${API_URL}/api/checkout` : null,
+    verifyPayment: API_URL ? `${API_URL}/api/checkout/verify` : null,
+    contact: API_URL ? `${API_URL}/api/contact` : null,
+    newsletter: API_URL ? `${API_URL}/api/newsletter` : null,
   },
 
   shippingNote:

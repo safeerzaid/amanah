@@ -80,6 +80,16 @@ export const products = raw.map((p, i) => ({
   order: i,
 }));
 
+/**
+ * Replaces the demo catalogue with the live one from the backend. Called once
+ * in main.jsx before the app renders, so every page that reads `products`
+ * synchronously sees the live catalogue.
+ */
+export function setCatalogue(list) {
+  products.length = 0;
+  products.push(...list);
+}
+
 export const getProductBySlug = (slug) => products.find((p) => p.slug === slug);
 export const getProductById = (id) => products.find((p) => p.id === id);
 export const effectivePrice = (p) => p.salePrice ?? p.price;
