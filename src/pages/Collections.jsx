@@ -6,6 +6,7 @@ import { PageHeader } from '../components/ui';
 import { collections } from '../data/collections';
 import { products } from '../data/products';
 import { site } from '../data/site';
+import { text } from '../data/content';
 
 export default function Collections() {
   useEffect(() => {
@@ -16,8 +17,8 @@ export default function Collections() {
     <>
       {/* PageHeader includes the scroll animation on its title. */}
       <PageHeader
-        title="Collections"
-        intro="Each collection is a chapter: a sentiment, a tale and an enduring bond."
+        title={text('collections.title', 'Collections')}
+        intro={text('collections.intro', 'Each collection is a chapter: a sentiment, a tale and an enduring bond.')}
         crumbs={[{ label: 'Collections' }]}
       />
 

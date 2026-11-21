@@ -8,6 +8,7 @@ import SelectMenu from '../components/SelectMenu';
 import { collections } from '../data/collections';
 import { effectivePrice } from '../data/products';
 import { site } from '../data/site';
+import { text } from '../data/content';
 import { fetchProducts } from '../utils/api';
 import { useLockBody } from '../hooks/useLockBody';
 import { classNames, formatPrice } from '../utils/format';
@@ -193,7 +194,7 @@ export default function Shop() {
       <PageHeader
         eyebrow="Shop"
         title={title}
-        intro="Handcrafted designer jewellery, made to be treasured and passed on."
+        intro={text('shop.intro', 'Handcrafted designer jewellery, made to be treasured and passed on.')}
         crumbs={[{ label: 'Shop' }]}
       />
 

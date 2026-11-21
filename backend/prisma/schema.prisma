@@ -18,7 +18,7 @@ model Product {
   id          String         @id @default(cuid())
   slug        String         @unique
   name        String
-  category    String // necklaces | earrings | rings | bracelets | designer
+  category    String // a Category id, e.g. necklaces
   short       String
   description String         @default("")
   price       Int // cents
@@ -35,6 +35,17 @@ model Product {
   updatedAt   DateTime       @updatedAt
 
   @@index([category])
+}
+
+// Shop categories, managed on the admin's Categories page. Product.category holds a
+// category's id (its slug, e.g. "necklaces"); a category with products cannot be deleted.
+model Category {
+  id          String   @id // slug used in URLs and in Product.category
+  name        String
+  tagline     String   @default("")
+  description String   @default("")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
 }
 
 model ProductImage {
@@ -55,7 +66,11 @@ model Order {
   status            OrderStatus @default(PENDING)
   email             String
   customer          Json // name, phone, shipping address
-  subtotal          Int // cents
+  subtotal          Int // cents: the amount charged, after any coupon discount, shipping included
+  couponCode        String? // the coupon used, if any
+  discount          Int         @default(0) // cents taken off by the coupon
+  shipping          Int         @default(0) // cents charged for delivery
+  shippingZone      String? // name of the zone that priced the delivery
   currency          String      @default("CAD")
   razorpayOrderId   String?     @unique
   razorpayPaymentId String?     @unique
@@ -65,6 +80,19 @@ model Order {
   updatedAt         DateTime    @updatedAt
 
   @@index([status, createdAt])
+}
+
+// Discount codes, managed on the admin's Coupons page and entered at checkout.
+model Coupon {
+  code        String    @id // stored in capitals, e.g. WELCOME10
+  type        String // percent | amount
+  value       Int // percent: 1-90; amount: cents
+  minSubtotal Int       @default(0) // cents; the bag must reach this before the code works
+  maxUses     Int? // empty = unlimited
+  uses        Int       @default(0) // paid orders that used it
+  expiresAt   DateTime? // the code stops working after this moment
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
 }
 
 model OrderItem {
@@ -85,6 +113,28 @@ model ContactMessage {
   topic     String?
   message   String
   createdAt DateTime @default(now())
+}
+
+// A delivery area and its price. Checkout picks the zone with the longest matching
+// PIN prefix, then one listing the shopper's state, then one with neither (catch-all).
+model ShippingZone {
+  id          String   @id @default(cuid())
+  name        String
+  rate        Int // cents
+  freeAbove   Int? // cents: delivery is free when the order reaches this
+  pinPrefixes String[]
+  states      String[]
+  minDays     Int
+  maxDays     Int
+  priority    Int      @default(0) // breaks ties: higher wins
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// Shop settings edited in the admin, one row per key (e.g. "contactEmail").
+model Setting {
+  key   String @id
+  value String
 }
 
 model NewsletterSubscriber {

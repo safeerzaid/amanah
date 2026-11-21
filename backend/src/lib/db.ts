@@ -11,7 +11,10 @@ function client() {
   if (!globalForPrisma.prisma) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) throw new Error('DATABASE_URL is not set.');
-    globalForPrisma.prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+    // Extra queries wait for a free connection. The local `prisma dev` database drops
+    // connections beyond about 3 at once, so .env sets DATABASE_POOL_MAX=3 for it.
+    const max = Number(process.env.DATABASE_POOL_MAX) || 10;
+    globalForPrisma.prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString, max }) });
   }
   return globalForPrisma.prisma;
 }

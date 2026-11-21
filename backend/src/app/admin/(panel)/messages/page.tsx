@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 
-export const metadata: Metadata = { title: 'Messages' };
+export const metadata: Metadata = { title: 'Enquiries' };
 
-export default async function MessagesPage() {
+export default async function EnquiriesPage() {
   const [messages, subscribers] = await Promise.all([
     db.contactMessage.findMany({ orderBy: { createdAt: 'desc' }, take: 200 }),
     db.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' } }),
@@ -12,11 +12,11 @@ export default async function MessagesPage() {
   return (
     <>
       <div className="page-head">
-        <h1>Messages</h1>
+        <h1>Enquiries</h1>
       </div>
 
       {messages.length === 0 ? (
-        <div className="card muted">No contact messages yet.</div>
+        <div className="card muted">No enquiries yet. Messages sent through the contact form appear here.</div>
       ) : (
         messages.map((m) => (
           <article key={m.id} className="card">

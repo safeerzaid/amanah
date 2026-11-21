@@ -44,8 +44,11 @@ export const site = {
     products: API_URL ? `${API_URL}/api/products` : null,
     orders: API_URL ? `${API_URL}/api/checkout` : null,
     verifyPayment: API_URL ? `${API_URL}/api/checkout/verify` : null,
+    coupon: API_URL ? `${API_URL}/api/coupons/check` : null,
+    shipping: API_URL ? `${API_URL}/api/shipping/quote` : null,
     contact: API_URL ? `${API_URL}/api/contact` : null,
     newsletter: API_URL ? `${API_URL}/api/newsletter` : null,
+    content: API_URL ? `${API_URL}/api/content` : null,
   },
 
   shippingNote:

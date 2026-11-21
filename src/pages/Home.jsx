@@ -10,9 +10,12 @@ import { Reveal, SectionHeading } from '../components/ui';
 import { collections } from '../data/collections';
 import { products } from '../data/products';
 import { brandStory, site } from '../data/site';
+import { media } from '../data/media';
+import { Accent, isEdited, text } from '../data/content';
 
 function Hero() {
   const videoRef = useRef(null);
+  const customPhoto = isEdited('image.heroPoster');
 
   useEffect(() => {
     const v = videoRef.current;
@@ -38,40 +41,47 @@ function Hero() {
         {/* The film plays silently behind the headline. Its poster is its own
             first frame, so nothing visibly swaps when playback starts; the same
             frame stands in when motion is turned down in the OS. */}
-        <video
-          ref={videoRef}
-          className="media hero__video"
-          controls={false}
-          disablePictureInPicture
-          disableRemotePlayback
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/images/hero-poster.jpg"
-          aria-hidden="true"
-        >
-          <source src="/video/hero.mp4" type="video/mp4" />
-        </video>
-        <Media id="heroPoster" eager className="hero__still" />
+        {/* A hero photo chosen on the admin's Contents page replaces the film. */}
+        {customPhoto ? (
+          <Media id="heroPoster" eager className="hero__still hero__still--only" />
+        ) : (
+          <>
+            <video
+              ref={videoRef}
+              className="media hero__video"
+              controls={false}
+              disablePictureInPicture
+              disableRemotePlayback
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={media.heroPoster.src ?? undefined}
+              aria-hidden="true"
+            >
+              <source src="/video/hero.mp4" type="video/mp4" />
+            </video>
+            <Media id="heroPoster" eager className="hero__still" />
+          </>
+        )}
       </div>
       <div className="hero__shade" aria-hidden="true" />
 
       <div className="hero__inner container">
         <h1 className="hero__title">
-          <span className="hero__line">crafted</span>
-          <span className="hero__line hero__line--indent">in trust</span>
+          <span className="hero__line">{text('home.heroLine1', 'crafted')}</span>
+          <span className="hero__line hero__line--indent">{text('home.heroLine2', 'in trust')}</span>
           <span className="sr-only"> | {site.name}, {site.tagline}</span>
         </h1>
 
         <div className="hero__intro">
           <div className="hero__ctas">
             <Link to="/shop" className="btn btn--gold">
-              Shop collection
+              {text('home.heroCta1', 'Shop collection')}
             </Link>
             <Link to="/about" className="btn btn--ghost-light">
-              Discover more
+              {text('home.heroCta2', 'Discover more')}
             </Link>
           </div>
         </div>
@@ -119,7 +129,11 @@ function FeaturedProducts() {
     <section className="section section--white">
       <div className="container">
         <Reveal>
-          <SectionHeading title="Pieces to treasure" intro="Signature pieces from the Amanah collection, each one made to be gifted and kept." link={{ to: '/shop', label: 'Shop all' }} />
+          <SectionHeading
+            title={text('home.featuredTitle', 'Pieces to treasure')}
+            intro={text('home.featuredIntro', 'Signature pieces from the Amanah collection, each one made to be gifted and kept.')}
+            link={{ to: '/shop', label: 'Shop all' }}
+          />
         </Reveal>
         <div className="showcase">
           {featured.map((p, i) => (
@@ -139,11 +153,11 @@ function BrandStory() {
       <div className="container">
         <div className="story__intro">
           <h2 className="section-title">
-            The beauty <em>of trust</em>
+            <Accent value={text('home.storyTitle', 'The beauty *of trust*')} />
           </h2>
-          <p className="story__lead">{brandStory}</p>
+          <p className="story__lead">{text('brandStory', brandStory)}</p>
           <Link to="/about" className="btn btn--primary">
-            Read our story <ArrowRight size={15} strokeWidth={1.3} />
+            {text('home.storyCta', 'Read our story')} <ArrowRight size={15} strokeWidth={1.3} />
           </Link>
         </div>
         <div className="story__photos">
@@ -164,24 +178,26 @@ function BrandStory() {
 
 function Editorial() {
   const frames = [
-    { id: 'editorialTall', no: '01', caption: 'Sculpted gold' },
-    { id: 'editorialWide', no: '02', caption: 'Held close' },
-    { id: 'editorialSmall', no: '03', caption: 'Little hearts' },
+    { id: 'editorialTall', no: '01', caption: text('home.editCaption1', 'Sculpted gold') },
+    { id: 'editorialWide', no: '02', caption: text('home.editCaption2', 'Held close') },
+    { id: 'editorialSmall', no: '03', caption: text('home.editCaption3', 'Little hearts') },
   ];
   return (
     <section className="section section--deep editorial">
       <div className="container">
         <Reveal className="editorial__head">
           <h2 className="editorial__title">
-            The Amanah <em>edit</em>
+            <Accent value={text('home.editTitle', 'The Amanah *edit*')} />
           </h2>
           <div className="editorial__intro">
             <p>
-              Light, texture and quiet confidence. A study of pieces designed to be lived in and handed on, every moment
-              framed with elegance.
+              {text(
+                'home.editIntro',
+                'Light, texture and quiet confidence. A study of pieces designed to be lived in and handed on, every moment framed with elegance.',
+              )}
             </p>
             <Link to="/collections" className="btn btn--gold">
-              Explore the collections <ArrowRight size={15} strokeWidth={1.3} />
+              {text('home.editCta', 'Explore the collections')} <ArrowRight size={15} strokeWidth={1.3} />
             </Link>
           </div>
         </Reveal>
@@ -200,9 +216,9 @@ function Editorial() {
           <div className="lookbook__quote">
             <Monogram tone="burgundy" className="lookbook__mark" />
             <div>
-              <p className="lookbook__line">“Each piece carries a sentiment, a tale and an enduring bond.”</p>
+              <p className="lookbook__line">{text('home.editQuote', '“Each piece carries a sentiment, a tale and an enduring bond.”')}</p>
               <Link to="/shop" className="btn btn--primary btn--sm lookbook__cta">
-                Shop the edit <ArrowRight size={14} strokeWidth={1.4} />
+                {text('home.editQuoteCta', 'Shop the edit')} <ArrowRight size={14} strokeWidth={1.4} />
               </Link>
             </div>
           </div>
@@ -221,11 +237,11 @@ function Promo() {
       <div className="promo__shade" aria-hidden="true" />
       <Reveal className="promo__content container">
         <h2 className="promo__title">
-          Gifts that <em>carry meaning</em>
+          <Accent value={text('home.promoTitle', 'Gifts that *carry meaning*')} />
         </h2>
-        <p className="promo__text">An unforgettable gift that preserves moments of feeling for many years to come.</p>
+        <p className="promo__text">{text('home.promoText', 'An unforgettable gift that preserves moments of feeling for many years to come.')}</p>
         <Link to="/shop" className="btn btn--gold">
-          Find the perfect gift
+          {text('home.promoCta', 'Find the perfect gift')}
         </Link>
       </Reveal>
     </section>
@@ -242,9 +258,9 @@ function Newsletter() {
           </div>
           <div className="nl-card__body">
             <h2 className="nl-card__title">
-              Join the <em>Amanah</em> list
+              <Accent value={text('home.newsletterTitle', 'Join the *Amanah* list')} />
             </h2>
-            <p className="nl-card__text">New collections, campaign stories and invitations, sent with care.</p>
+            <p className="nl-card__text">{text('home.newsletterText', 'New collections, campaign stories and invitations, sent with care.')}</p>
             <NewsletterForm id="home-newsletter" variant="pill" />
           </div>
         </Reveal>

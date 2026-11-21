@@ -3,6 +3,8 @@
  * With VITE_API_URL set they call the Amanah backend; without it the site runs
  * on the demo catalogue and every form says it is not connected.
  */
+import { setCollections } from '../data/collections';
+import { setContent } from '../data/content';
 import { products, setCatalogue } from '../data/products';
 import { site } from '../data/site';
 
@@ -38,11 +40,17 @@ async function request(url, feature, options = {}) {
 
 const post = (url, feature, payload) => request(url, feature, { method: 'POST', body: JSON.stringify(payload) });
 
-/** Loads the live catalogue into src/data/products.js. Called once at start-up. */
+/** Loads the live catalogue (products and categories) into src/data. Called once at start-up. */
 export async function loadCatalogue() {
   if (!site.endpoints.products) return false;
+  // The site's edited text and photos load alongside; if they fail, the built-in copy is used.
+  const contentRequest = request(site.endpoints.content, 'Site content')
+    .then((c) => setContent(c.content))
+    .catch((err) => console.warn('[content] Using the built-in copy:', err.message));
   const data = await request(site.endpoints.products, 'The catalogue');
+  await contentRequest;
   setCatalogue(data.products);
+  if (Array.isArray(data.categories) && data.categories.length) setCollections(data.categories, data.products);
   return true;
 }
 
@@ -99,6 +107,12 @@ export async function placeOrder(order) {
   const result = await post(site.endpoints.verifyPayment, 'Online ordering', payment);
   return { orderId: result.orderId, reference: result.orderId.slice(-8).toUpperCase() };
 }
+
+/** Checks a discount code against the bag. Resolves to { code, label, discount, total } in whole units. */
+export const checkCoupon = (code, items) => post(site.endpoints.coupon, 'Discount codes', { code, items });
+
+/** The delivery charge for an address: { shipping, days, zone, total } in whole units. */
+export const quoteShipping = (payload) => post(site.endpoints.shipping, 'Shipping', payload);
 
 export const sendContactMessage = (msg) => post(site.endpoints.contact, 'The contact form', msg);
 export const subscribeNewsletter = (email) => post(site.endpoints.newsletter, 'Newsletter sign-up', { email });

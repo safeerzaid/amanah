@@ -1265,3 +1265,73 @@ a.contact2__value {
     font-size: 1.3rem;
   }
 }
+
+/* Checkout: discount code */
+.coupon-box {
+  margin: 4px 0 20px;
+}
+.coupon-box__row {
+  display: flex;
+  gap: 8px;
+}
+.coupon-box__row input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+.coupon-box__row input::placeholder {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+.coupon-box__row input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.coupon-box__row .btn {
+  height: 44px;
+  min-width: 84px;
+}
+.coupon-box__error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--err);
+}
+.coupon-box--applied {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px dashed var(--ink);
+  border-radius: var(--radius);
+  background: var(--ivory-shade);
+}
+.totals__discount dd {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Shipping line in the order totals */
+.totals__note {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+.totals > .totals__error {
+  margin-top: -4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #8e1b20;
+}

@@ -1,6 +1,10 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth';
 import { logoutAction } from '../login/actions';
+import NavLinks from './NavLinks';
+import ScrollReset from './ScrollReset';
+import TopBar from './TopBar';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,16 +12,26 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   await requireAdmin();
   return (
     <div className="admin">
-      <nav className="admin__nav" aria-label="Admin">
-        <span className="admin__brand">Amanah admin</span>
-        <Link href="/admin/orders">Orders</Link>
-        <Link href="/admin/products">Products</Link>
-        <Link href="/admin/messages">Messages</Link>
-        <form action={logoutAction}>
-          <button>Sign out</button>
+      <nav className="side" aria-label="Admin">
+        <Link href="/admin" className="side__brand">
+          <Image className="side__logo" src="/brand/logo-ivory.png" alt="Amanah Jewellery" width={550} height={163} priority />
+          <Image className="side__mark" src="/brand/mark-gold.png" alt="Amanah Jewellery" width={153} height={162} />
+        </Link>
+        <NavLinks />
+        <form action={logoutAction} className="side__out">
+          <button className="side__link">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H14M10 16l-4-4 4-4M6 12h9.5" />
+            </svg>
+            <span>Sign out</span>
+          </button>
         </form>
       </nav>
-      <main className="admin__main">{children}</main>
+      <main className="admin__main">
+        <ScrollReset />
+        <TopBar />
+        {children}
+      </main>
     </div>
   );
 }

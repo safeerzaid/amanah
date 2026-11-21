@@ -7,20 +7,46 @@ import { useStore } from '../context/StoreContext';
 import { site } from '../data/site';
 import { formatPrice } from '../utils/format';
 
-export function OrderTotals({ subtotal }) {
+/**
+ * `shipping` comes from the checkout once an address is entered:
+ * { status: 'loading' } | { status: 'ok', shipping, days } | { status: 'error', message }.
+ * Without it (the bag page) shipping shows as to be confirmed.
+ */
+export function OrderTotals({ subtotal, coupon = null, shipping = null }) {
+  const known = shipping?.status === 'ok';
+  const total = (coupon ? coupon.total : subtotal) + (known ? shipping.shipping : 0);
   return (
     <dl className="totals">
       <div>
         <dt>Subtotal</dt>
         <dd>{formatPrice(subtotal)}</dd>
       </div>
+      {coupon && (
+        <div className="totals__discount">
+          <dt>Discount ({coupon.code})</dt>
+          <dd>−{formatPrice(coupon.discount)}</dd>
+        </div>
+      )}
       <div>
-        <dt>Shipping</dt>
-        <dd className="is-tbc">To be confirmed</dd>
+        <dt>
+          Shipping
+          {known && shipping.days && <span className="totals__note">Delivery in {shipping.days}</span>}
+        </dt>
+        {known ? (
+          <dd>{shipping.shipping ? formatPrice(shipping.shipping) : 'Free'}</dd>
+        ) : (
+          <dd className="is-tbc">{shipping?.status === 'loading' ? 'Calculating…' : shipping?.status === 'error' ? 'Not available' : 'To be confirmed'}</dd>
+        )}
       </div>
+      {shipping?.status === 'error' && (
+        <div className="totals__error">
+          <dt className="sr-only">Shipping problem</dt>
+          <dd role="alert">{shipping.message}</dd>
+        </div>
+      )}
       <div className="totals__grand">
-        <dt>Estimated total</dt>
-        <dd>{formatPrice(subtotal)}</dd>
+        <dt>{known ? 'Total' : 'Estimated total'}</dt>
+        <dd>{formatPrice(total)}</dd>
       </div>
     </dl>
   );

@@ -34,6 +34,8 @@ export const checkoutSchema = z.object({
   customer: customerSchema,
   // Prices or totals sent by the browser are ignored: everything is recalculated here.
   items: z.array(cartItemSchema).min(1).max(50),
+  // Optional discount code; checked and applied here, never trusted from the browser.
+  couponCode: z.string().trim().max(40).optional(),
 });
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
@@ -75,6 +77,9 @@ export async function markOrderPaid(orderId: string, razorpayPaymentId: string) 
     data: { status: 'PAID', razorpayPaymentId, paidAt: new Date() },
   });
   if (count === 0) return false; // already handled
+  // A coupon counts as used once its order is paid.
+  const order = await db.order.findUnique({ where: { id: orderId }, select: { couponCode: true } });
+  if (order?.couponCode) await db.coupon.updateMany({ where: { code: order.couponCode }, data: { uses: { increment: 1 } } });
   await sendOrderEmails(orderId).catch((err) => console.error('[orders] Email failed:', err));
   return true;
 }
@@ -92,11 +97,14 @@ async function sendOrderEmails(orderId: string) {
     .join('\n');
   const address = [c.address1, c.address2, `${c.city}, ${c.state} ${c.postcode}`, c.country].filter(Boolean).join('\n');
   const ref = order.id.slice(-8).toUpperCase();
+  const couponLine =
+    (order.couponCode ? `Coupon ${order.couponCode}: -${money(order.discount)}\n` : '') +
+    `Shipping: ${order.shipping ? money(order.shipping) : 'Free'}\n`;
 
   await sendEmail({
     to: order.email,
     subject: `Your ${storeName()} order ${ref}`,
-    text: `Dear ${c.firstName},\n\nThank you for your order. We have received your payment.\n\nOrder ${ref}\n${lines}\n\nTotal paid: ${money(order.subtotal)}\n\nShipping to:\n${c.firstName} ${c.lastName}\n${address}\n\nWe will email you again when your order ships.\n\n${storeName()}`,
+    text: `Dear ${c.firstName},\n\nThank you for your order. We have received your payment.\n\nOrder ${ref}\n${lines}\n\n${couponLine}Total paid: ${money(order.subtotal)}\n\nShipping to:\n${c.firstName} ${c.lastName}\n${address}\n\nWe will email you again when your order ships.\n\n${storeName()}`,
   });
 
   const inbox = shopInbox();
@@ -105,7 +113,7 @@ async function sendOrderEmails(orderId: string) {
       to: inbox,
       replyTo: order.email,
       subject: `New paid order ${ref}: ${money(order.subtotal)}`,
-      text: `${c.firstName} ${c.lastName} <${order.email}>, ${c.phone}\n\n${lines}\n\nTotal: ${money(order.subtotal)}\n\nShip to:\n${address}`,
+      text: `${c.firstName} ${c.lastName} <${order.email}>, ${c.phone}\n\n${lines}\n\n${couponLine}Total: ${money(order.subtotal)}\n\nShip to:\n${address}`,
     });
   }
 }

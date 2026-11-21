@@ -5,6 +5,7 @@ import SelectMenu from '../components/SelectMenu';
 import { whatsappUrl } from '../components/ContactList';
 import { Field, Notice, PageHeader } from '../components/ui';
 import { site } from '../data/site';
+import { text } from '../data/content';
 import { sendContactMessage, NotConfiguredError } from '../utils/api';
 import { isValidEmail } from '../utils/format';
 
@@ -71,8 +72,8 @@ export default function Contact() {
   return (
     <>
       <PageHeader
-        title="Contact us"
-        intro="Questions about a piece, an order or a gift? Send us a message."
+        title={text('contact.title', 'Contact us')}
+        intro={text('contact.intro', 'Questions about a piece, an order or a gift? Send us a message.')}
         crumbs={[{ label: 'Contact' }]}
       />
       <section className="container contact2 page-pad-b">

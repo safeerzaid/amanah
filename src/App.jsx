@@ -1,4 +1,6 @@
+import { useSyncExternalStore } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { contentVersion, subscribeContent } from './data/content';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -13,6 +15,8 @@ import Account from './pages/Account';
 import NotFound from './pages/NotFound';
 
 export default function App() {
+  // Re-renders the pages when the admin's live preview sends new text or photos.
+  useSyncExternalStore(subscribeContent, contentVersion);
   return (
     <Routes>
       <Route element={<MainLayout />}>

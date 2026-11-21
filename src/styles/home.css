@@ -967,3 +967,8 @@
 .hero__inner {
   grid-template-columns: minmax(0, 1fr);
 }
+
+/* A hero photo chosen in the admin shows instead of the film. */
+.hero__still--only {
+  display: block;
+}

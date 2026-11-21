@@ -1,6 +1,7 @@
 // Copies the storefront's demo catalogue (src/data/products.js) into the database.
 // Run with: npm run db:seed. Safe to re-run: products are upserted by id, and
-// existing products keep any photos already uploaded through the admin.
+// existing products keep any photos already uploaded through the admin (a product
+// with no photos at all is given the demo ones).
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
@@ -46,15 +47,17 @@ async function main() {
       specs: p.specs,
       sortOrder: p.order,
     };
-    const existing = await db.product.findUnique({ where: { id: p.id }, select: { id: true } });
-    if (existing) {
-      await db.product.update({ where: { id: p.id }, data });
-      continue;
-    }
     // Demo photos are files in the storefront's /public/images, so their URLs stay relative.
     const images = p.images
       .filter((img) => img.src)
       .map((img, position) => ({ url: img.src!, alt: p.name, view: img.view, position }));
+    const existing = await db.product.findUnique({ where: { id: p.id }, select: { _count: { select: { images: true } } } });
+    if (existing) {
+      // Only a product with no photos at all gets the demo ones; uploaded photos are never touched.
+      const addImages = existing._count.images === 0 && images.length > 0;
+      await db.product.update({ where: { id: p.id }, data: { ...data, ...(addImages && { images: { create: images } }) } });
+      continue;
+    }
     await db.product.create({ data: { id: p.id, ...data, images: { create: images } } });
   }
   console.log(`Seeded ${products.length} products.`);

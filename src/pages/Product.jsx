@@ -56,9 +56,11 @@ export default function Product() {
 
           <div className="pdp__info">
             <div className="pdp__sticky">
-              <Link to={`/shop?category=${product.category}`} className="pdp__cat">
-                {collection?.name}
-              </Link>
+              {collection && (
+                <Link to={`/shop?category=${product.category}`} className="pdp__cat">
+                  {collection.name}
+                </Link>
+              )}
               <h1 className="pdp__name">{product.name}</h1>
               <Price product={product} className="price--lg pdp__price" />
               <p className="pdp__desc">{product.description}</p>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { OrderStatus } from '@/generated/prisma/client';
 import { db } from '@/lib/db';
 import { formatMoney } from '@/lib/money';
+import FilterTabs from '../FilterTabs';
 
 export const metadata: Metadata = { title: 'Orders' };
 
@@ -30,13 +31,10 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
       <div className="page-head">
         <h1>Orders</h1>
       </div>
-      <nav className="tabs" aria-label="Filter orders">
-        {FILTERS.map((f) => (
-          <Link key={f.label} href={`/admin/orders?status=${f.status ?? 'ALL'}`} aria-current={f === current ? 'page' : undefined}>
-            {f.label}
-          </Link>
-        ))}
-      </nav>
+      <FilterTabs
+        label="Filter orders"
+        tabs={FILTERS.map((f) => ({ href: `/admin/orders?status=${f.status ?? 'ALL'}`, label: f.label, active: f === current }))}
+      />
       {orders.length === 0 ? (
         <div className="card muted">No orders here.</div>
       ) : (

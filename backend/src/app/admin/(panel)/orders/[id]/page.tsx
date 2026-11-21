@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { formatMoney } from '@/lib/money';
 import { updateOrderStatus } from '../../actions';
+import Dropdown from '../../Dropdown';
 
 export const metadata: Metadata = { title: 'Order' };
 
@@ -41,13 +42,12 @@ export default async function OrderPage({ params }: PageProps<'/admin/orders/[id
           <form action={updateOrderStatus.bind(null, order.id)} className="row">
             <label className="row" style={{ gap: 8 }}>
               Change status
-              <select name="status" defaultValue={order.status} style={{ width: 'auto' }}>
-                {Object.keys(STATUS_HELP).map((s) => (
-                  <option key={s} value={s}>
-                    {s.toLowerCase()}
-                  </option>
-                ))}
-              </select>
+              <Dropdown
+                name="status"
+                defaultValue={order.status}
+                className="dropdown--auto"
+                options={Object.keys(STATUS_HELP).map((s) => ({ value: s, label: s[0] + s.slice(1).toLowerCase() }))}
+              />
             </label>
             <button className="btn btn--sm">Update</button>
           </form>
@@ -76,6 +76,16 @@ export default async function OrderPage({ params }: PageProps<'/admin/orders/[id
                 <td className="num">{money(i.unitPrice * i.qty)}</td>
               </tr>
             ))}
+            {order.couponCode && (
+              <tr>
+                <td colSpan={3}>Coupon {order.couponCode}</td>
+                <td className="num">−{money(order.discount)}</td>
+              </tr>
+            )}
+            <tr>
+              <td colSpan={3}>Shipping{order.shippingZone && <span className="muted small"> · {order.shippingZone}</span>}</td>
+              <td className="num">{order.shipping ? money(order.shipping) : 'Free'}</td>
+            </tr>
             <tr>
               <td colSpan={3}>
                 <strong>Total</strong>

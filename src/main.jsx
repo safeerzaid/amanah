@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { StoreProvider } from './context/StoreContext';
 import { loadCatalogue } from './utils/api';
+import { startPreview } from './data/content';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/layout.css';
@@ -31,7 +32,7 @@ function CatalogueError({ onRetry }) {
 // (restored from this device) are checked against it on start-up.
 function start() {
   loadCatalogue()
-    .then(() =>
+    .then(() => {
       root.render(
         <React.StrictMode>
           <BrowserRouter>
@@ -40,8 +41,9 @@ function start() {
             </StoreProvider>
           </BrowserRouter>
         </React.StrictMode>,
-      ),
-    )
+      );
+      startPreview();
+    })
     .catch((err) => {
       console.error(err);
       root.render(<CatalogueError onRetry={start} />);

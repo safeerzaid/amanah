@@ -7,7 +7,7 @@ import { motifFor } from '../components/ProductCard';
 import { OrderTotals } from './Cart';
 import { useStore } from '../context/StoreContext';
 import { site } from '../data/site';
-import { placeOrder, NotConfiguredError, PaymentCancelledError } from '../utils/api';
+import { checkCoupon, placeOrder, quoteShipping, NotConfiguredError, PaymentCancelledError } from '../utils/api';
 import { classNames, formatPrice, isValidEmail, isValidPhone } from '../utils/format';
 
 const fields = {
@@ -35,13 +35,110 @@ function validate(values) {
   return errors;
 }
 
+/** "Discount code" box in the order summary. The backend checks the code against the bag. */
+function CouponBox({ cart, coupon, onApply, onRemove }) {
+  const [code, setCode] = useState('');
+  const [state, setState] = useState({ busy: false, error: '' });
+
+  const apply = async (e) => {
+    e.preventDefault();
+    if (!code.trim()) return;
+    setState({ busy: true, error: '' });
+    try {
+      const result = await checkCoupon(
+        code.trim(),
+        cart.items.map((i) => ({ id: i.id, variant: i.variant, qty: i.qty })),
+      );
+      onApply(result);
+      setCode('');
+      setState({ busy: false, error: '' });
+    } catch (err) {
+      setState({ busy: false, error: err instanceof NotConfiguredError ? 'Discount codes are not available yet.' : err.message });
+    }
+  };
+
+  if (coupon) {
+    return (
+      <div className="coupon-box coupon-box--applied">
+        <span>
+          <strong>{coupon.code}</strong> · {coupon.label}
+        </span>
+        <button type="button" className="text-link" onClick={onRemove}>
+          Remove
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form className="coupon-box" onSubmit={apply} noValidate>
+      <label htmlFor="co-coupon" className="sr-only">
+        Discount code
+      </label>
+      <div className="coupon-box__row">
+        <input
+          id="co-coupon"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Discount code"
+          autoComplete="off"
+          aria-invalid={Boolean(state.error)}
+          aria-describedby={state.error ? 'co-coupon-error' : undefined}
+        />
+        <button type="submit" className="btn btn--outline btn--sm" disabled={state.busy || !code.trim()}>
+          {state.busy ? <Loader2 size={15} className="spin" /> : 'Apply'}
+        </button>
+      </div>
+      {state.error && (
+        <p id="co-coupon-error" className="coupon-box__error" role="alert">
+          {state.error}
+        </p>
+      )}
+    </form>
+  );
+}
+
 export default function Checkout() {
   const { cart, clearCart } = useStore();
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState({ state: 'idle' });
+  const [coupon, setCoupon] = useState(null);
+  // A code was checked against the bag as it was; if the bag changes, ask for it again.
+  const [couponFor, setCouponFor] = useState(cart.subtotal);
+  if (coupon && couponFor !== cart.subtotal) {
+    setCoupon(null);
+  }
+  // The delivery charge for the address typed so far, priced by the backend's shipping zones.
+  const postcode = values.postcode.trim();
+  const quoteKey = postcode.length >= 3 ? JSON.stringify([postcode, values.state.trim(), cart.subtotal, coupon?.code ?? '']) : '';
+  const [quote, setQuote] = useState({ key: '', result: null });
+  const shipping = !quoteKey ? null : quote.key === quoteKey ? quote.result : { status: 'loading' };
+  const total = (coupon ? coupon.total : cart.subtotal) + (shipping?.status === 'ok' ? shipping.shipping : 0);
   const statusRef = useRef(null);
+
+  useEffect(() => {
+    if (!quoteKey) return undefined;
+    let stale = false;
+    const [pc, st, , code] = JSON.parse(quoteKey);
+    const timer = setTimeout(async () => {
+      let result;
+      try {
+        const q = await quoteShipping({ postcode: pc, state: st, couponCode: code || undefined, items: cart.items.map((i) => ({ id: i.id, variant: i.variant, qty: i.qty })) });
+        result = { status: 'ok', shipping: q.shipping, days: q.days };
+      } catch (err) {
+        // Without a backend, shipping simply stays "to be confirmed".
+        result = err instanceof NotConfiguredError ? null : { status: 'error', message: err.message };
+      }
+      if (!stale) setQuote({ key: quoteKey, result });
+    }, 450);
+    return () => {
+      stale = true;
+      clearTimeout(timer);
+    };
+    // Re-quotes only when the key changes; the bag's contents are covered by cart.subtotal in it.
+  }, [quoteKey]);
 
   useEffect(() => {
     document.title = `Checkout | ${site.name}`;
@@ -79,6 +176,7 @@ export default function Checkout() {
       const order = await placeOrder({
         customer: values,
         items: cart.items.map((i) => ({ id: i.id, variant: i.variant, qty: i.qty })),
+        couponCode: coupon?.code,
       });
       // Only reached once the backend has verified the payment.
       clearCart();
@@ -227,7 +325,7 @@ export default function Checkout() {
               </>
             ) : (
               <>
-                <Lock size={15} strokeWidth={1.4} /> Pay securely · {formatPrice(cart.subtotal)}
+                <Lock size={15} strokeWidth={1.4} /> Pay securely · {formatPrice(total)}
               </>
             )}
           </button>
@@ -250,7 +348,16 @@ export default function Checkout() {
               </li>
             ))}
           </ul>
-          <OrderTotals subtotal={cart.subtotal} />
+          <CouponBox
+            cart={cart}
+            coupon={coupon}
+            onApply={(c) => {
+              setCoupon(c);
+              setCouponFor(cart.subtotal);
+            }}
+            onRemove={() => setCoupon(null)}
+          />
+          <OrderTotals subtotal={cart.subtotal} coupon={coupon} shipping={shipping} />
           <Link to="/cart" className="text-link">
             Edit bag
           </Link>

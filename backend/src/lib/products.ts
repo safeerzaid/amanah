@@ -3,7 +3,6 @@ import { z } from 'zod';
 import type { Product, ProductImage } from '@/generated/prisma/client';
 import { toUnits } from './money';
 
-export const CATEGORIES = ['necklaces', 'earrings', 'rings', 'bracelets', 'designer'] as const;
 export const TONES = ['ivory', 'champagne', 'deep'] as const;
 
 export const variantsSchema = z
