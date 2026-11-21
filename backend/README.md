@@ -24,12 +24,13 @@ their server actions, `prisma/` the schema, migrations and seed.
 
 ```bash
 cd backend
-npm install
-cp .env.example .env          # then fill in the values
+npm install                   # also generates the Prisma client
+cp .env.example .env          # then fill it in; the backend will not start without it
 npm run admin:hash -- "a-long-admin-password"   # paste the output into ADMIN_PASSWORD_HASH
 npm run db:deploy             # create the tables
 npm run db:seed               # load the demo catalogue from ../src/data/products.js
-npm run dev                   # http://localhost:3000, admin at /admin
+npm run dev                   # admin at /admin — read the port it prints:
+                              # Next.js moves to 3001 if 3000 is taken
 ```
 
 For a database, use the Coolify Postgres public URL (turn public access off
