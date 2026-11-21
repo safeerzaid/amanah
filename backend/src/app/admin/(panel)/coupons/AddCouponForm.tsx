@@ -20,7 +20,7 @@ export default function AddCouponForm({ currency }: { currency: string }) {
   }, null);
 
   return (
-    <form ref={form} action={action} className="card coupon-form">
+    <form ref={form} action={action} className="card coupon-form" data-tour="coupon-form">
       <h2>New coupon</h2>
       <div className="coupon-form__grid">
         <label>

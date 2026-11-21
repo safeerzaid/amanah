@@ -32,7 +32,7 @@ export default async function CouponsPage() {
             No coupons yet. Create one above, then share the code with your customers.
           </p>
         ) : (
-          <ul className="coupon-list">
+          <ul className="coupon-list" data-tour="coupon-list">
             {coupons.map((c) => {
               const state = couponState(c);
               const rules = [

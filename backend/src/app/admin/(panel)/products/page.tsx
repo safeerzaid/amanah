@@ -28,7 +28,7 @@ export default async function ProductsPage({ searchParams }: PageProps<'/admin/p
     <>
       <div className="page-head">
         <h1>Products</h1>
-        <Link className="btn" href="/admin/products/new">
+        <Link className="btn" href="/admin/products/new" data-tour="add-product">
           Add product
         </Link>
       </div>
@@ -43,7 +43,7 @@ export default async function ProductsPage({ searchParams }: PageProps<'/admin/p
       {products.length === 0 ? (
         <div className="card muted">No products yet. Add one, or run `npm run db:seed` to load the demo catalogue.</div>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="products-table">
           <table>
             <thead>
               <tr>
@@ -88,7 +88,7 @@ export default async function ProductsPage({ searchParams }: PageProps<'/admin/p
                     </div>
                   </td>
                   <td>
-                    <div className="row-actions">
+                    <div className="row-actions" data-tour="product-actions">
                       <Link href={`/admin/products/${p.id}`} className="icon-btn" aria-label={`Edit ${p.name}`} title="Edit">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                           <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />

@@ -19,7 +19,7 @@ export default async function EnquiriesPage() {
         <div className="card muted">No enquiries yet. Messages sent through the contact form appear here.</div>
       ) : (
         messages.map((m) => (
-          <article key={m.id} className="card">
+          <article key={m.id} className="card" data-tour="enquiry">
             <div className="row" style={{ justifyContent: 'space-between' }}>
               <strong>
                 {m.name} · <a href={`mailto:${m.email}`}>{m.email}</a>
@@ -33,7 +33,7 @@ export default async function EnquiriesPage() {
         ))
       )}
 
-      <section className="card">
+      <section className="card" data-tour="subscribers">
         <h2>Newsletter subscribers ({subscribers.length})</h2>
         {subscribers.length === 0 ? (
           <p className="muted">No sign-ups yet.</p>

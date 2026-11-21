@@ -24,7 +24,7 @@ export default async function ReturnsPage() {
       {orders.length === 0 ? (
         <div className="card muted">No returns or cancellations.</div>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="returns-table">
           <table>
             <thead>
               <tr>

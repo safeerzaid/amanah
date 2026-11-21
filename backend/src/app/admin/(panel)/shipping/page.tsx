@@ -43,7 +43,7 @@ export default async function ShippingPage() {
             : 'A PIN code uses the zone with the longest matching PIN prefix, then a zone listing its state, then a zone with no PINs or states (catch-all). Addresses no zone covers can’t check out.'}
         </p>
         {zones.length > 0 && (
-          <ul className="coupon-list zone-list">
+          <ul className="coupon-list zone-list" data-tour="zone-list">
             {zones.map((z) => {
               const where = [
                 z.pinPrefixes.length ? `PIN ${z.pinPrefixes.join(', ')}` : '',
@@ -89,7 +89,7 @@ export default async function ShippingPage() {
         )}
       </section>
 
-      <section className="card">
+      <section className="card" data-tour="to-ship">
         <div className="card__head">
           <h2>To ship ({toShip.length})</h2>
         </div>

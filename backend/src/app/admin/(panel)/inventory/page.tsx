@@ -19,7 +19,7 @@ export default async function InventoryPage() {
           </p>
         </div>
       </div>
-      <div className="table-wrap">
+      <div className="table-wrap" data-tour="inventory-table">
         <table>
           <thead>
             <tr>
@@ -39,7 +39,7 @@ export default async function InventoryPage() {
                 <td>{p.inStock ? <span className="badge badge--PAID">In stock</span> : <span className="badge badge--out">Sold out</span>}</td>
                 <td className="num">
                   <form action={setInStock.bind(null, p.id, !p.inStock)}>
-                    <button className="btn btn--ghost btn--sm">{p.inStock ? 'Mark sold out' : 'Mark in stock'}</button>
+                    <button className="btn btn--ghost btn--sm" data-tour="stock-toggle">{p.inStock ? 'Mark sold out' : 'Mark in stock'}</button>
                   </form>
                 </td>
               </tr>

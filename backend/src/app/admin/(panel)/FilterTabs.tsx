@@ -13,7 +13,7 @@ export default function FilterTabs({ tabs, label }: { tabs: Tab[]; label: string
   const pending = clicked && clicked.from === query ? clicked.href : null;
 
   return (
-    <nav className="tabs" aria-label={label}>
+    <nav className="tabs" aria-label={label} data-tour="filters">
       {tabs.map((t) => (
         <Link
           key={t.href}

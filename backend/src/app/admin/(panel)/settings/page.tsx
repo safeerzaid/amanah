@@ -18,7 +18,7 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <section className="card">
+      <section className="card" data-tour="settings-store">
         <h2>Store</h2>
         <dl className="details">
           <dt>Store name</dt>

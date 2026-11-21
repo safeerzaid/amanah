@@ -26,7 +26,7 @@ export default async function PaymentsPage() {
 
       {!live && <p className="alert alert--error">Razorpay keys are not set, so the shop cannot take payments yet. See Settings.</p>}
 
-      <div className="tiles">
+      <div className="tiles" data-tour="payments-tiles">
         <div className="tile tile--gold">
           <span className="tile__value">{formatMoney(received._sum.subtotal ?? 0, currency)}</span>
           <span className="tile__label">Received</span>
@@ -42,7 +42,7 @@ export default async function PaymentsPage() {
       {payments.length === 0 ? (
         <div className="card muted">No payments yet.</div>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="payments-table">
           <table>
             <thead>
               <tr>

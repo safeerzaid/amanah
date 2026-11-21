@@ -36,7 +36,7 @@ export default function AddZoneForm({ currency, states }: { currency: string; st
   const toggleState = (s: string) => setChosen((list) => (list.includes(s) ? list.filter((x) => x !== s) : [...list, s]));
 
   return (
-    <form action={action} className="card zone-form">
+    <form action={action} className="card zone-form" data-tour="zone-form">
       <h2>Add a zone</h2>
       <div className="zone-form__grid">
         <label className="zone-form__wide">

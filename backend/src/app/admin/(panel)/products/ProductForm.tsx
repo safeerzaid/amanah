@@ -60,7 +60,7 @@ export default function ProductForm({
 
   return (
     <form action={action} className="pform">
-      <section className="card pform__card">
+      <section className="card pform__card" data-tour="product-form">
         <label>
           Product name
           <input name="name" defaultValue={values.name} required maxLength={120} className="pform__name" />
@@ -94,7 +94,7 @@ export default function ProductForm({
           <textarea name="description" defaultValue={values.description} maxLength={5000} rows={4} />
         </label>
 
-        <div className="pform__switches">
+        <div className="pform__switches" data-tour="product-switches">
           <Switch name="inStock" label="In stock" hint="Off shows it as sold out" defaultChecked={values.inStock} />
           <Switch name="featured" label="Featured" hint="Shown on the home page" defaultChecked={values.featured} />
           <Switch name="isNew" label="New" hint="Shows a “New” tag" defaultChecked={values.isNew} />
@@ -135,7 +135,7 @@ export default function ProductForm({
         <span className={`pform__msg${state?.error ? ' pform__msg--error' : ''}`} role={state?.error ? 'alert' : 'status'}>
           {state?.error ?? state?.ok ?? ''}
         </span>
-        <button className="btn" disabled={pending}>
+        <button className="btn" disabled={pending} data-tour="save">
           {pending ? 'Saving…' : productId ? 'Save changes' : 'Create product'}
         </button>
       </div>

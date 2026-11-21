@@ -60,7 +60,7 @@ export default function ContentForm({ section, saved, previewHref, library, shop
           .join(' · ');
         return (
           // Closed sections still send their fields when saving.
-          <details key={group.title} className="card content-group" open={i === 0}>
+          <details key={group.title} className="card content-group" open={i === 0} data-tour="content-group">
             <summary>
               <span className="content-group__title">{group.title}</span>
               <span className="content-group__meta">{summary}</span>
@@ -93,10 +93,10 @@ export default function ContentForm({ section, saved, previewHref, library, shop
         <span className={`pform__msg${state?.error ? ' pform__msg--error' : ''}`} role={state?.error ? 'alert' : 'status'}>
           {pending ? '' : (state?.error ?? (changed ? `${changed} unsaved ${changed === 1 ? 'change' : 'changes'}` : (state?.ok ?? '')))}
         </span>
-        <button type="button" className="btn btn--ghost" onClick={() => setPreviewing(true)}>
+        <button type="button" className="btn btn--ghost" onClick={() => setPreviewing(true)} data-tour="preview">
           Preview
         </button>
-        <button className="btn" disabled={pending}>
+        <button className="btn" disabled={pending} data-tour="save">
           {pending ? 'Saving…' : `Save ${section.title.toLowerCase()}`}
         </button>
       </div>

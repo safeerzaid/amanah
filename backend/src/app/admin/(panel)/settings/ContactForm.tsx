@@ -10,7 +10,7 @@ export default function ContactForm({ email, phone }: { email: string; phone: st
   const [state, action, pending] = useActionState<FormState, FormData>(saveContact, null);
 
   return (
-    <form action={action} className="card contact-form">
+    <form action={action} className="card contact-form" data-tour="settings-contact">
       <h2>Contact</h2>
       <div className="contact-form__grid">
         <label>

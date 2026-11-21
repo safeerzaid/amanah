@@ -40,7 +40,7 @@ export default async function CustomersPage() {
       {customers.length === 0 ? (
         <div className="card muted">No customers yet. They appear here after their first paid order.</div>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="customers-table">
           <table>
             <thead>
               <tr>

@@ -45,7 +45,7 @@ export default async function EditProductPage({ params }: PageProps<'/admin/prod
             View in shop ↗
           </a>
         </div>
-        <form action={deleteProduct.bind(null, product.id)}>
+        <form action={deleteProduct.bind(null, product.id)} data-tour="product-delete">
           <ConfirmButton
             className="icon-btn icon-btn--danger"
             label={`Delete ${product.name}`}
@@ -58,7 +58,7 @@ export default async function EditProductPage({ params }: PageProps<'/admin/prod
       </div>
 
       <div className="pedit">
-        <section className="card pphotos">
+        <section className="card pphotos" data-tour="product-photos">
           <h2>Photos</h2>
           {main ? (
             <div className="pphotos__main">

@@ -80,12 +80,12 @@ export default async function Dashboard() {
           <h1>Dashboard</h1>
           <p className="muted">What needs your attention today.</p>
         </div>
-        <Link className="btn" href="/admin/products/new">
+        <Link className="btn" href="/admin/products/new" data-tour="add-product">
           Add product
         </Link>
       </div>
 
-      <div className="tiles">
+      <div className="tiles" data-tour="dash-tiles">
         {tiles.map((t) => (
           <Link key={t.label} href={t.href} className={`tile tile--${t.tone}`}>
             <span className="tile__value">{t.value}</span>
@@ -97,7 +97,7 @@ export default async function Dashboard() {
 
       <div className="dash-grid">
         {/* Sales, last 14 days */}
-        <section className="card dash-sales">
+        <section className="card dash-sales" data-tour="dash-sales">
           <div className="card__head">
             <h2>Sales · last {DAYS} days</h2>
             <Link href="/admin/reports">Reports</Link>
@@ -135,7 +135,7 @@ export default async function Dashboard() {
         </section>
 
         {/* Stock alert */}
-        <section className={`card dash-stock${soldOut ? ' dash-stock--alert' : ''}`}>
+        <section className={`card dash-stock${soldOut ? ' dash-stock--alert' : ''}`} data-tour="dash-stock">
           <div className="card__head">
             <h2>Stock</h2>
             <Link href="/admin/inventory">Inventory</Link>

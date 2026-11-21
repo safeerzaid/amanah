@@ -9,7 +9,7 @@ export default function UploadForm({ productId }: { productId: string }) {
   const form = useRef<HTMLFormElement>(null);
 
   return (
-    <form ref={form} action={action} className="upload">
+    <form ref={form} action={action} className="upload" data-tour="photo-upload">
       <label className={`upload__drop${pending ? ' is-busy' : ''}`}>
         <input
           type="file"

@@ -23,7 +23,7 @@ export default function AddCategoryForm() {
   }, null);
 
   return (
-    <form ref={form} action={action} className="cat-add">
+    <form ref={form} action={action} className="cat-add" data-tour="category-add">
       <div className="cat-add__row">
         <input name="name" required maxLength={60} placeholder="New category name, e.g. Anklets" aria-label="New category name" />
         <button className="btn" disabled={pending}>

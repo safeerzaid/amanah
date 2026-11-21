@@ -103,7 +103,7 @@ export default function CategoryRow({
       <span className="badge">
         {count} {count === 1 ? 'product' : 'products'}
       </span>
-      <div className="cat-row__actions">
+      <div className="cat-row__actions" data-tour="category-actions">
         <button type="button" className="icon-btn" onClick={() => setMode('edit')} aria-label={`Edit ${category.name}`} title="Edit">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />

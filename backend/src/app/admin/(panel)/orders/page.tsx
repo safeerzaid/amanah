@@ -38,7 +38,7 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/ord
       {orders.length === 0 ? (
         <div className="card muted">No orders here.</div>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="orders-table">
           <table>
             <thead>
               <tr>

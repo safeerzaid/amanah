@@ -33,7 +33,7 @@ export default async function OrderPage({ params }: PageProps<'/admin/orders/[id
         </Link>
       </div>
 
-      <section className="card">
+      <section className="card" data-tour="order-status">
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <div>
             <span className={`badge badge--${order.status}`}>{order.status.toLowerCase()}</span>{' '}
@@ -54,7 +54,7 @@ export default async function OrderPage({ params }: PageProps<'/admin/orders/[id
         </div>
       </section>
 
-      <section className="table-wrap" style={{ marginBottom: 20 }}>
+      <section className="table-wrap" data-tour="order-items" style={{ marginBottom: 20 }}>
         <table>
           <thead>
             <tr>
@@ -99,7 +99,7 @@ export default async function OrderPage({ params }: PageProps<'/admin/orders/[id
       </section>
 
       <div className="form-grid">
-        <section className="card">
+        <section className="card" data-tour="order-customer">
           <h2>Customer</h2>
           <dl className="details">
             <dt>Name</dt>

@@ -48,7 +48,7 @@ export default async function ReportsPage() {
         </div>
       </div>
 
-      <div className="tiles">
+      <div className="tiles" data-tour="report-tiles">
         <div className="tile tile--gold">
           <span className="tile__value">{formatMoney(revenue, currency)}</span>
           <span className="tile__label">Total sales</span>
@@ -63,7 +63,7 @@ export default async function ReportsPage() {
         </div>
       </div>
 
-      <section className="card">
+      <section className="card" data-tour="report-months">
         <div className="card__head">
           <h2>Last 12 months</h2>
         </div>
@@ -77,7 +77,7 @@ export default async function ReportsPage() {
         </div>
       </section>
 
-      <section className="card">
+      <section className="card" data-tour="report-best">
         <div className="card__head">
           <h2>Best sellers</h2>
         </div>
